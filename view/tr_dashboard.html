@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<include href="blocks/head.html" />
+	<style>
+		.panel-scores {
+		  -moz-transition: all .3s ease;
+		  -o-transition: all .3s ease;
+		  -webkit-transition: all .3s ease;
+		}
+		.panel-scores .panel-heading {
+		  padding: 20px 10px;
+		}
+		.panel-scores .panel-heading .fa {
+		  margin-top: 10px;
+		  font-size: 58px;
+		}
+		.panel-scores .list-group-item {
+		  color: #777777;
+		  border-bottom: 1px solid rgba(250, 250, 250, 0.5);
+		}
+		.panel-scores .list-group-item:last-child {
+		  border-bottom-right-radius: 0px;
+		  border-bottom-left-radius: 0px;
+		}
+		.panel-scores .list-group-item:first-child {
+		  border-top-right-radius: 0px;
+		  border-top-left-radius: 0px;
+		}
+		.panel-scores .panel-body {
+		  background-color: #f0f0f0;
+		  font-size: 40px;
+		  color: #777777;
+		  padding: 20px;
+		  margin: 0px;
+		}
+		.uname a {
+		   color:white;
+		}
+		.panel-heading {
+		   min-height: 230px;
+		}
+
+
+	</style>
+	<title>{{ @site.name }} Team Wins </title>
+</head>
+<body>
+	<set fullwidth="{{ true }}" />
+	<include href="blocks/navbar.html" />
+	<div class="container-fluid">
+
+		    <section id="plans">
+		        <div class="container">
+		            <div class="row">
+		            	    <repeat group="{{ @results }}" value="{{ @item }}" counter="{{ @ctr }}">
+		            	    	<!-- item -->
+			                <div class="col-md-4 text-center">
+			                    <div class="panel panel-{{@item.status}} panel-scores">
+			                        <div class="panel-heading">
+			                            <a href="/user/{{@item.username}}"><img src="{{@item.avatar}}" class="img-rounded profile-picture" alt></a>
+			                            <h3 class="uname"><a href="/user/{{@item.username}}">{{@item.name}}</a></h3>
+			                        </div>
+			                        <div class="panel-body text-center">
+			                            <p><strong><div class="row">
+			                            	<div class="col-xs-4 text-center">{{ round(@item.hours, 2) }}<h5>Hours</h5></div>
+			                            	<div class="col-xs-4 text-center">{{ @item.closed }}<h5>Closed</h5></div>
+			                            	<div class="col-xs-4 text-center">{{ @item.late }}<h5>Late</h5></div>
+			                            </div></strong></p>
+			                        </div>
+			                        <ul class="list-group">
+			                        <repeat group="{{@item.tasks}}" key="{{ @key }}" value="{{@task}}">
+			                            <li class="list-group-item text-left"> <strong>{{ @key }}</strong>
+			                            <check if="{{ !empty(@task.due_date) }}">{{date("m/d/Y", strtotime(@task.due_date))}}</check>
+			                            <a href="{{ @site.url }}issues/{{@task.id}}">{{@task.name}}</a> </li>
+			                            </repeat>
+			                        </ul>
+			                        <div class="panel-footer">
+			                        <check if="{{ @sprint && @sprint.id }}">
+			                            <a class="btn btn-lg btn-block btn-{{@item.status}}" href="{{ @site.url }}taskboard/{{ @sprint.id }}/{{@item.id}}">View all tasks</a>
+			                          </check>
+			                        </div>
+			                    </div>
+			                </div>
+			                <!-- /item -->
+			                <check if="{{ @ctr > 0 && @ctr % 3 ==0 }}">
+		            	    		</div>
+		            	    		<div class="row">
+		            	    	</check>
+		            	    </repeat>
+		            	    </div>
+		<br>
+
+		<include href="blocks/footer.html" />
+	</div>
+
+
+</body>
+</html>
