@@ -14,8 +14,10 @@ class Base extends \Plugin {
          */
         public function _load() {
                 $f3 = \Base::instance();
+                $f3->config(__DIR__ . DIRECTORY_SEPARATOR . "config.ini");
                 $f3->route("GET /teamdaily/@id", "Plugin\Teamdaily\Controller->dashboard");
                 $f3->route("GET /teamdaily", "Plugin\Teamdaily\Controller->dashboard");
+                $this->_addNav('teamdaily', 'Daily Team Status', null, 'user');
         }
 
         /**

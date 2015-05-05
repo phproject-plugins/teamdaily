@@ -22,7 +22,7 @@ class Controller extends \Controller {
 	public function dashboard($f3, $params) {
 		$this->_requireLogin();
 		$db = $f3->get("db.instance");
-		if(empty($params['id'])) $params['id'] = 5;
+		if(empty($params['id'])) $params['id'] = $f3->get('td.default.team');
 		if(!$f3->get('GET.date')) {
 			$date = date("Y-m-d", strtotime("Yesterday"));
 		} else {
@@ -44,9 +44,9 @@ class Controller extends \Controller {
 				SUM(IF(f.field = 'status' AND f.new_value = 3, 1, 0)) as closed,
 				COUNT(DISTINCT i.id) as late
 			FROM user u
-			LEFT JOIN issue_update_detail d on u.id = d.user_id AND DATE(d.created_date) = '$date'
+			LEFT JOIN issue_update_detail d on u.id = d.user_id AND DATE(CONVERT_TZ(d.created_date, 'GMT', '".$f3->get('site.timezone')."')) = '$date'
 			LEFT JOIN issue_update_field f ON d.id = f.issue_update_id
-			LEFT JOIN issue i on u.id = i.owner_id AND i.due_date = '$date' AND i.closed_date IS NULL AND (i.closed_date IS NULL OR i.due_date < DATE(i.closed_date))
+			LEFT JOIN issue i on u.id = i.owner_id AND i.due_date = '$date' AND i.closed_date IS NULL AND (i.closed_date IS NULL OR i.due_date < DATE(CONVERT_TZ(i.closed_date, 'GMT', '".$f3->get('site.timezone')."')))
 			WHERE u.id IN ($team_ids)  GROUP BY u.id ORDER BY u.name");
 
 
@@ -124,7 +124,7 @@ class Controller extends \Controller {
 
 		if(true) {
 
-			$this->_render("tr_dashboard.html");
+			$this->_render("td_dashboard.html");
 		} else {
 			$f3->error(404);
 		}
