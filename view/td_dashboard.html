@@ -52,6 +52,18 @@
 
 		    <section id="plans">
 		        <div class="container">
+		            <form method="GET" action="" class="form-inline">
+  			   <div class="form-group">
+					<select class="form-control input-sm" name="author_id">
+						 <repeat group="{{ @group_list }}" value="{{ @item }}">
+						<option value="{{ @item.id }}">{{ @item.name }}</option>
+						</repeat>
+					</select>
+				<input class="form-control input-sm" id="dashboard_date" type="text" name="date"  value="{{ empty(@GET.date) ? "" : @GET.date }}" placeholder="Yesterday">
+				<button type="submit" class="btn btn-primary btn-sm">Go</button>
+		               </div>
+		             </form>
+		             <br />
 		            <div class="row">
 		            	    <repeat group="{{ @results }}" value="{{ @item }}" counter="{{ @ctr }}">
 		            	    	<!-- item -->
@@ -93,7 +105,13 @@
 
 		<include href="blocks/footer.html" />
 	</div>
-
+<script src="{{ @site.url }}minify/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript">
+	// Due date picker
+	$('#dashboard_date').datepicker({
+		format: 'yyyy-mm-dd'
+	});
+</script>
 
 </body>
 </html>

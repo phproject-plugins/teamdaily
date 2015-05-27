@@ -22,7 +22,14 @@ class Controller extends \Controller {
 	public function dashboard($f3, $params) {
 		$this->_requireLogin();
 		$db = $f3->get("db.instance");
-		if(empty($params['id'])) $params['id'] = $f3->get('td.default.team');
+
+		$usergroups = new  \Model\User\Group();
+		$group_list = $usergroups->getUserGroups();
+		$f3->set("group_list", $group_list);
+
+		$start_group = (empty($group_list[0]['id'])) ? $f3->get('td.default.team') : $group_list[0]['id'];
+
+		if(empty($params['id'])) $params['id'] = $start_group;
 		if(!$f3->get('GET.date')) {
 			$date = date("Y-m-d", strtotime("Yesterday"));
 		} else {
