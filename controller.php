@@ -31,7 +31,7 @@ class Controller extends \Controller {
 
 		if(empty($params['id'])) $params['id'] = $start_group;
 		if(!$f3->get('GET.date')) {
-			$date = date("Y-m-d", strtotime("Yesterday"));
+			$date = date("Y-m-d", strtotime("Yesterday", \Helper\View::instance()->utc2local()));
 		} else {
 			$date = date("Y-m-d", strtotime($f3->get('GET.date')));
 		}
