@@ -82,7 +82,7 @@ class Controller extends \Controller {
 			$teamscore['closed'] 	+= $score['closed'];
 			$teamscore['late'] 	+= $score['late'];
 			$points = 0;
-			if($score['hours']  > 5 ) {
+			if($score['hours']  >= 6 ) {
 				$points  +=2;
 			}
 
