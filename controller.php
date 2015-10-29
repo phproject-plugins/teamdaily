@@ -1,7 +1,7 @@
 <?php
 /**
  * @package  Teamdaily
- * @author   Ryan Bouche <rbouche@gmail.com>
+ * @author   Ryan Bouche <rightbit@gmail.com>
  * @version  1.0.0
  */
 
@@ -42,7 +42,7 @@ class Controller extends \Controller {
 		$team_ids = implode(",", $team_members);
 
 		$sprint = new \Model\Sprint;
-		$sprint->load("NOW() BETWEEN start_date AND end_date");
+		$sprint->load(array("? BETWEEN start_date AND end_date", date("Y-m-d")));
 		$f3->set("sprint", $sprint);
 
 		$scores = $db->exec(
