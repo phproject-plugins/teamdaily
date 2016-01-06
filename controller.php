@@ -55,16 +55,17 @@ class Controller extends \Controller {
 		$user = new \Model\User();
 		$user->load($group_id);
 		$teamscore = array(
-			'id' =>  $user->id,
-			'name' =>$user->name,
+			'id' => $user->id,
+			'name' => $user->name,
 			'username' => $user->username,
 			'hours' => 0,
 			'closed' => 0,
 			'late' => 0,
 			'status' => 'warning',
 			'tasks' => array(),
-			'avatar' =>  $user->avatar(128)
-			);
+			'avatar' => $user->avatar(128),
+			'avatar2x' => $user->avatar(256)
+		);
 		$teampoints = 0;
 
 		$user ->reset();
@@ -72,17 +73,17 @@ class Controller extends \Controller {
 
 		foreach ($scores as &$score) {
 			// Increment Team Scores
-			$teamscore['hours'] 	+= $score['hours'];
-			$teamscore['closed'] 	+= $score['closed'];
-			$teamscore['late'] 	+= $score['late'];
+			$teamscore['hours'] += $score['hours'];
+			$teamscore['closed'] += $score['closed'];
+			$teamscore['late'] += $score['late'];
 			$points = 0;
-			if($score['hours']  >= 6 ) {
+			if($score['hours'] >= 6 ) {
 				$points  +=2;
 			}
-			if($score['closed']  > 0 ) {
+			if($score['closed'] > 0 ) {
 				$points  +=1;
 			}
-			if($score['late']  == 0 ) {
+			if($score['late'] == 0 ) {
 				$points  +=2;
 			}
 
@@ -98,13 +99,13 @@ class Controller extends \Controller {
 			// Load the User's avatar
 			$user->load($score['id']);
 			$score['avatar']  = $user->avatar(128);
+			$score['avatar2x']  = $user->avatar(256);
 
 			// Load the user's top issues
-			$score['tasks'] ['Active']= $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND status= '2'", $user->id), array('order' => 'due_date, priority DESC'));
-			$score['tasks'] ['Due']= $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND date(due_date) < DATE_ADD(NOW(), INTERVAL 2 day)", $user->id), array('order' => 'due_date, priority DESC'));
-			$score['tasks'] ['High']= $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND   priority > '0'", $user->id), array('order' => 'priority DESC'));
+			$score['tasks'] ['Active'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND status= '2'", $user->id), array('order' => 'due_date, priority DESC'));
+			$score['tasks'] ['Due'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND date(due_date) < DATE_ADD(NOW(), INTERVAL 2 day)", $user->id), array('order' => 'due_date, priority DESC'));
+			$score['tasks'] ['High'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND   priority > '0'", $user->id), array('order' => 'priority DESC'));
 			$user->reset();
-
 		}
 
 		// Calculate team overall success then add team to scores
@@ -117,6 +118,7 @@ class Controller extends \Controller {
 		$f3->set("results", $scores);
 
 		// Render page
+		$f3->set("title", "Team Wins");
 		$this->_render("teamdaily/view/td_dashboard.html");
 	}
 
