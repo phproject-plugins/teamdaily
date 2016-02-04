@@ -12,14 +12,12 @@ class Controller extends \Controller {
 	/**
 	 * Handle HTTP GET request
 	 * @param Base  $f3
-	 * @param array $params
 	 */
 	public function dashboard($f3) {
 		$this->_requireLogin();
 		$db = $f3->get("db.instance");
 
-		$usergroups = new  \Model\User\Group();
-		$group_list = $usergroups->getUserGroups();
+		$group_list = \Model\User\Group::getUserGroups();
 		$f3->set("group_list", $group_list);
 
 		$start_group = (empty($group_list[0]['id'])) ? $f3->get('td.default.team') : $group_list[0]['id'];
