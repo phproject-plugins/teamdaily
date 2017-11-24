@@ -51,11 +51,13 @@
 			<div class="container">
 				<form method="GET" action="" class="form-inline">
 					<div class="form-group">
-						<select class="form-control input-sm" name="group_id">
-							<repeat group="{{ @group_list }}" value="{{ @item }}">
-								<option value="{{ @item.id }}" {~ if(@@GET.group_id == @item.id) echo 'selected'; ~}>{{ @item.name }}</option>
-							</repeat>
-						</select>
+						<check if="{{ @group_list }}">
+							<select class="form-control input-sm" name="group_id">
+								<repeat group="{{ @group_list }}" value="{{ @item }}">
+									<option value="{{ @item.id }}" {~ if(@@GET.group_id == @item.id) echo 'selected'; ~}>{{ @item.name }}</option>
+								</repeat>
+							</select>
+						</check>
 						<input class="form-control input-sm" id="dashboard_date" type="text" name="date"  value="{{ empty(@GET.date) ? "" : @GET.date }}" placeholder="Yesterday">
 						<button type="submit" class="btn btn-primary btn-sm">Go</button>
 					</div>

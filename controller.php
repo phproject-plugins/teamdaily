@@ -11,7 +11,7 @@ class Controller extends \Controller {
 
 	/**
 	 * Handle HTTP GET request
-	 * @param Base  $f3
+	 * @param Base $f3
 	 */
 	public function dashboard($f3) {
 		$this->_requireLogin();
@@ -32,6 +32,11 @@ class Controller extends \Controller {
 		foreach($members->find(array("group_id = ? AND deleted_date IS NULL", $group_id)) as $r) {
 			$team_members[] = $r->user_id;
 		}
+
+		if (!$team_members) {
+			$team_members = [$f3->get('user.id')];
+		}
+
 		$team_ids = implode(",", $team_members);
 
 		$sprint = new \Model\Sprint;
@@ -47,7 +52,7 @@ class Controller extends \Controller {
 			LEFT JOIN issue_update_detail d on u.id = d.user_id AND DATE(CONVERT_TZ(d.created_date, 'GMT', '{$f3->get('site.timezone')}')) = '$date'
 			LEFT JOIN issue_update_field f ON d.id = f.issue_update_id
 			LEFT JOIN issue i on u.id = i.owner_id AND i.due_date = '$date' AND i.closed_date IS NULL AND (i.closed_date IS NULL OR i.due_date < DATE(CONVERT_TZ(i.closed_date, 'GMT', '{$f3->get('site.timezone')}')))
-			WHERE u.id IN ($team_ids)  GROUP BY u.id ORDER BY u.name");
+			WHERE u.id IN ($team_ids) GROUP BY u.id ORDER BY u.name");
 
 		// Get the Team user
 		$user = new \Model\User();
@@ -76,13 +81,13 @@ class Controller extends \Controller {
 			$teamscore['late'] += $score['late'];
 			$points = 0;
 			if($score['hours'] >= 6 ) {
-				$points  +=2;
+				$points +=2;
 			}
 			if($score['closed'] > 0 ) {
-				$points  +=1;
+				$points +=1;
 			}
 			if($score['late'] == 0 ) {
-				$points  +=2;
+				$points +=2;
 			}
 
 			if ($points >= 4) {
@@ -96,13 +101,13 @@ class Controller extends \Controller {
 
 			// Load the User's avatar
 			$user->load($score['id']);
-			$score['avatar']  = $user->avatar(128);
-			$score['avatar2x']  = $user->avatar(256);
+			$score['avatar'] = $user->avatar(128);
+			$score['avatar2x'] = $user->avatar(256);
 
 			// Load the user's top issues
-			$score['tasks'] ['Active'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND status= '2'", $user->id), array('order' => 'due_date, priority DESC'));
-			$score['tasks'] ['Due'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND date(due_date) < DATE_ADD(NOW(), INTERVAL 2 day)", $user->id), array('order' => 'due_date, priority DESC'));
-			$score['tasks'] ['High'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND   priority > '0'", $user->id), array('order' => 'priority DESC'));
+			$score['tasks']['Active'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND status= '2'", $user->id), array('order' => 'due_date, priority DESC'));
+			$score['tasks']['Due'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND date(due_date) < DATE_ADD(NOW(), INTERVAL 2 day)", $user->id), array('order' => 'due_date, priority DESC'));
+			$score['tasks']['High'] = $issue->findone(array("owner_id = ? AND closed_date IS NULL AND deleted_date IS NULL AND priority > '0'", $user->id), array('order' => 'priority DESC'));
 			$user->reset();
 		}
 
