@@ -69,8 +69,8 @@
 						<div class="col-md-4 text-center">
 							<div class="panel panel-{{ @item.status | esc }} panel-scores">
 								<div class="panel-heading">
-									<a href="/user/{{ @item.username | esc }}"><img src="{{ @item.avatar | esc }}" srcset="{{ @item.avatar2x | esc }} 2x" class="img-rounded profile-picture" alt></a>
-									<h3 class="uname"><a href="/user/{{ @item.username | esc }}">{{@item.name}}</a></h3>
+									<a href="{{ @BASE }}/user/{{ @item.username | esc }}"><img src="{{ @item.avatar | esc }}" srcset="{{ @item.avatar2x | esc }} 2x" class="img-rounded profile-picture" alt></a>
+									<h3 class="uname"><a href="{{ @BASE }}/user/{{ @item.username | esc }}">{{@item.name}}</a></h3>
 								</div>
 								<div class="panel-body text-center">
 									<p><strong><div class="row">
